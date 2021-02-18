@@ -1,7 +1,8 @@
-class Player
-    attr_accessor :name
+class Team
+    attr_accessor :name, :points
     def initialize name
         @name = name
+        @points = 0
     end
 end
 
@@ -11,75 +12,73 @@ class Match
       @home_score = home_score
       @away_team = away_team
       @away_score = away_score
-      @winner = nil
     end
 
-    def winner? result
-        # {"A": 3, "B": 1},
+    def calculate_result?
         if @home_score > @away_score
+            @home_team.points += 3
             @winner = @home_team
         elsif @home_score < @away_score
+            @away_team.points += 3
             @winner = @away_team
         else
+            @home_team.points += 1
+            @away_team.points += 1
             @winner = "Tie"
+        end
+    end
+
+    def to_s
+        if @winner == "Tie"
+            "The match between #{@home_team.name} and #{@away_team.name} was a tie."
+        elsif @winner == nil
+            "The match hasn't been played yet"
+        else
+            "The winner is #{@winner.name}"
         end
     end
 end
 class Tournament
-    attr_accessor :teams, :results
+    attr_accessor :teams, :matches
 
-    def initialize (teams, results)
+    def initialize (teams, matches)
         @teams = teams
-        @results = results
+        @matches = matches
+        @winner = nil
     end
 
     def standings
-        @results.each { |result| 
-            assignScore result
+        @matches.each { |match| 
+            match.calculate_result?
         }
-        Hash[@teams.sort_by{|k, v| v}.reverse]
+        @teams.sort_by!{ |team| team.points }.reverse
     end
 
-    def assignScore result
-        # {"A": 3, "B": 1},
-        if result.values[0] == result.values[1]
-            @teams[result.keys[0]] += 1
-            @teams[result.keys[1]] += 1
-        else
-            winner = result.max_by{ |k, v| v }[0] # {"A", 3}
-            @teams[winner] += 3
-        end
-    end
-
-    def formattedStandings
-        Hash[@teams.sort_by{|k, v| v}.reverse].each { |k, v| 
-            puts "Team #{k} with #{v} points \n"
+    def formatted_standings
+        standings.each { |standing|
+            puts "Team #{standing.name} with #{standing.points} points \n"
         }
     end
 
-    def getWinner
-        formattedStandings()
-        puts "The winner is... Team #{@teams.max_by{|k,v| v}[0]}!!!"
+    def get_winner
+        @winner = "Team #{@teams.max_by{|team| team.points}.name}"
     end
 end
 
-# Team A 3 x 1 Team B
-# Team C 0 x 0 Team D
-# Team A 1 x 1 Team C
-# Team B 2 x 3 Team D
-# Team A 2 X 1 Team D
-# Team B 3 x 1 Team C
+teamA = Team.new "A"
+teamB = Team.new "B"
+teamC = Team.new "C"
+teamD = Team.new "D"
+teams = [teamA, teamB, teamC, teamD]
 
-teams = {"A": 0, "B": 0, "C": 0, "D": 0}
-results = [
-    {"A": 3, "B": 1},
-    {"C": 0, "D": 0},
-    {"A": 1, "C": 1},
-    {"B": 2, "D": 3},
-    {"A": 2, "D": 1},
-    {"B": 3, "C": 1}
-]
+matches = []
+matches << Match.new(teamA, 3, teamB, 1)
+matches << Match.new(teamC, 0, teamD, 0)
+matches << Match.new(teamA, 1, teamC, 1)
+matches << Match.new(teamB, 2, teamD, 3)
+matches << Match.new(teamA, 2, teamD, 1)
+matches << Match.new(teamB, 3, teamC, 1)
 
-tourney = Tournament.new teams, results
-tourney.standings
-tourney.getWinner
+tourney = Tournament.new(teams, matches)
+tourney.formatted_standings
+tourney.get_winner
