@@ -1,3 +1,30 @@
+class Player
+    attr_accessor :name
+    def initialize name
+        @name = name
+    end
+end
+
+class Match
+    def initialize(home_team, home_score, away_team, away_score)
+      @home_team = home_team
+      @home_score = home_score
+      @away_team = away_team
+      @away_score = away_score
+      @winner = nil
+    end
+
+    def winner? result
+        # {"A": 3, "B": 1},
+        if @home_score > @away_score
+            @winner = @home_team
+        elsif @home_score < @away_score
+            @winner = @away_team
+        else
+            @winner = "Tie"
+        end
+    end
+end
 class Tournament
     attr_accessor :teams, :results
 
