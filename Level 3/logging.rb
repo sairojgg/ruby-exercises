@@ -15,7 +15,7 @@ module Logging
     AVAILABLE_LEVELS = [:debug, :info, :warn, :error, :fatal]
 
     def log(*args)
-        @logger ||= Logger.new('logfile.log')
+        @logger ||= Logger.new('/logs/logfile.log')
         case args.size
         when 1
             @logger.info(args[0])
