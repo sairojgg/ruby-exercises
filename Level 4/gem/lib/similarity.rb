@@ -1,5 +1,5 @@
 class Similarity
-    def self.calculate_distance(source, comparison)
+    def self.distance_between(source, comparison)
         raise "This method cannot compare to NilClass" if comparison.nil?
         n = source.length
         m = comparison.length

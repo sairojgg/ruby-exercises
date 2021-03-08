@@ -1,3 +1,3 @@
 require "similarity"
 
-puts Similarity.calculate_distance("bananas", "ananas")
+puts Similarity.distance_between("bananas", "ananas")
