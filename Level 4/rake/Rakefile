@@ -1,0 +1,9 @@
+task default: %w[similarity]
+
+task :similarity do
+    require 'similarity'
+    require 'csv'
+    CSV.foreach('words.csv', :headers => false) do |row|
+      puts Similarity.calculate_distance(row[0], row[1])
+    end
+end
