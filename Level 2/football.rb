@@ -1,74 +1,76 @@
 class Team
-    attr_accessor :name, :points
-    def initialize name
-        @name = name
-        @points = 0
-    end
+  attr_accessor :name, :points
+
+  def initialize(name)
+    @name = name
+    @points = 0
+  end
 end
 
 class Match
-    def initialize(home_team, home_score, away_team, away_score)
-      @home_team = home_team
-      @home_score = home_score
-      @away_team = away_team
-      @away_score = away_score
-    end
+  def initialize(home_team, home_score, away_team, away_score)
+    @home_team = home_team
+    @home_score = home_score
+    @away_team = away_team
+    @away_score = away_score
+  end
 
-    def calculate_result?
-        if @home_score > @away_score
-            @home_team.points += 3
-            @winner = @home_team
-        elsif @home_score < @away_score
-            @away_team.points += 3
-            @winner = @away_team
-        else
-            @home_team.points += 1
-            @away_team.points += 1
-            @winner = "Tie"
-        end
+  def calculate_result?
+    if @home_score > @away_score
+      @home_team.points += 3
+      @winner = @home_team
+    elsif @home_score < @away_score
+      @away_team.points += 3
+      @winner = @away_team
+    else
+      @home_team.points += 1
+      @away_team.points += 1
+      @winner = 'Tie'
     end
+  end
 
-    def to_s
-        if @winner == "Tie"
-            "The match between #{@home_team.name} and #{@away_team.name} was a tie."
-        elsif @winner == nil
-            "The match hasn't been played yet"
-        else
-            "The winner is #{@winner.name}"
-        end
+  def to_s
+    if @winner == 'Tie'
+      "The match between #{@home_team.name} and #{@away_team.name} was a tie."
+    elsif @winner.nil?
+      "The match hasn't been played yet"
+    else
+      "The winner is #{@winner.name}"
     end
+  end
 end
+
 class Tournament
-    attr_accessor :teams, :matches
+  attr_accessor :teams, :matches
 
-    def initialize (teams, matches)
-        @teams = teams
-        @matches = matches
-        @winner = nil
-    end
+  def initialize(teams, matches)
+    @teams = teams
+    @matches = matches
+    @winner = nil
+  end
 
-    def standings
-        @matches.each { |match| 
-            match.calculate_result?
-        }
-        @teams.sort_by!{ |team| team.points }.reverse
+  def standings
+    @matches.each do |match|
+      match.calculate_result?
     end
+    @teams.sort_by! { |team| team.points }.reverse
+  end
 
-    def formatted_standings
-        standings.each { |standing|
-            puts "Team #{standing.name} with #{standing.points} points \n"
-        }
+  def formatted_standings
+    standings.each do |standing|
+      puts "Team #{standing.name} with #{standing.points} points \n"
     end
+  end
 
-    def get_winner
-        @winner = "Team #{@teams.max_by{|team| team.points}.name}"
-    end
+  def get_winner
+    @winner = "Team #{@teams.max_by { |team| team.points }.name}"
+  end
 end
 
-teamA = Team.new "A"
-teamB = Team.new "B"
-teamC = Team.new "C"
-teamD = Team.new "D"
+teamA = Team.new 'A'
+teamB = Team.new 'B'
+teamC = Team.new 'C'
+teamD = Team.new 'D'
 teams = [teamA, teamB, teamC, teamD]
 
 matches = []
